@@ -1,0 +1,18 @@
+package com.fkhmarketplace.pricing.poc.compiletime
+
+import com.fkhmarketplace.pricing.poc.pojo.Message;
+
+rule "a sample rule"
+when
+    m: Message(status == "matched!")
+then
+    System.out.println("(¯`·._.·(¯`·._.· compile time " + m.getStatus() + " ·._.·´¯)·._.·´¯)");
+end
+
+
+rule "another sample rule"
+when
+    m: Message(status == "another match!")
+then
+    System.out.println("compile time drools says " + m.getStatus() + " (╯°□°）╯︵ ┻━┻");
+end

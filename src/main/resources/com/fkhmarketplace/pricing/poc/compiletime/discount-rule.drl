@@ -1,0 +1,24 @@
+
+package com.fkhmarketplace.pricing.poc.compiletime
+
+import com.fkhmarketplace.pricing.poc.pojo.Product;
+import com.fkhmarketplace.pricing.poc.pojo.Seller;
+import com.fkhmarketplace.pricing.poc.pojo.Lot;
+import com.fkhmarketplace.pricing.poc.pojo.DiscountInputSignals;
+import com.fkhmarketplace.pricing.poc.pojo.DiscountBasePrice;
+import com.fkhmarketplace.pricing.poc.operator.Percent;
+import com.fkhmarketplace.pricing.poc.rules.DiscountRule;
+
+
+rule "for seller_apob_id=seller_location_123 and brand=glaxosmithkline and product_category=Rx set the base price to 20% of MRP"
+when
+    $p: Product(brand == "glaxosmithkline" && category == "Rx")
+    $s: Seller(seller_apob_id == "seller_location_123")
+    $l: Lot()
+    $input_signals: DiscountInputSignals($p, $s, $l)
+    $discount_rule: DiscountRule(20)
+    $output: DiscountBasePrice($l != null)
+then
+    $output = $discount_rule.evaluate($input_signals, $output);
+    update($output)
+end
