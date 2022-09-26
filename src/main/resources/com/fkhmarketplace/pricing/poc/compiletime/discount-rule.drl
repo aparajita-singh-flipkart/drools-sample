@@ -9,16 +9,13 @@ import com.fkhmarketplace.pricing.poc.pojo.DiscountBasePrice;
 import com.fkhmarketplace.pricing.poc.operator.Percent;
 import com.fkhmarketplace.pricing.poc.rules.DiscountRule;
 
-
+dialect "java"
 rule "for seller_apob_id=seller_location_123 and brand=glaxosmithkline and product_category=Rx set the base price to 20% of MRP"
 when
-    $p: Product(brand == "glaxosmithkline" && category == "Rx")
+    $p: Product(brand == "glaxosmithkline", category == "Rx")
     $s: Seller(seller_apob_id == "seller_location_123")
     $l: Lot()
-    $input_signals: DiscountInputSignals($p, $s, $l)
-    $discount_rule: DiscountRule(20)
-    $output: DiscountBasePrice($l != null)
+    $output: DiscountBasePrice()
 then
-    $output = $discount_rule.evaluate($input_signals, $output);
     update($output)
 end

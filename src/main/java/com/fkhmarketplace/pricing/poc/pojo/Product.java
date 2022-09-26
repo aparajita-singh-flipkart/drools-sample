@@ -3,6 +3,7 @@ package com.fkhmarketplace.pricing.poc.pojo;
 public class Product {
     String brand;
     String category;
+    int id;
 
     public String getBrand() {
         return brand;
@@ -20,9 +21,21 @@ public class Product {
         this.category = category;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public Product(String brand, String category) {
         this.brand = brand;
         this.category = category;
+    }
+
+    public Product(int id) {
+        this.id = id;
     }
 
     @Override
@@ -30,6 +43,7 @@ public class Product {
         return "Product{" +
                 "brand='" + brand + '\'' +
                 ", category='" + category + '\'' +
+                ", id='" + id + '\'' +
                 '}';
     }
 }

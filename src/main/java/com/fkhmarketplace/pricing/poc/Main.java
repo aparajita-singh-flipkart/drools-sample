@@ -10,14 +10,13 @@ import com.fkhmarketplace.pricing.poc.pojo.Lot;
 import com.fkhmarketplace.pricing.poc.pojo.Message;
 import com.fkhmarketplace.pricing.poc.pojo.Product;
 import com.fkhmarketplace.pricing.poc.pojo.Seller;
+import com.fkhmarketplace.pricing.poc.rules.DiscountRule;
 import com.fkhmarketplace.pricing.poc.rules.TrackingAgendaEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Main {
     static KnowledgeBaseHandler knowledgeBaseHandler = new KnowledgeBaseHandler();
@@ -26,8 +25,8 @@ public class Main {
         System.out.println("drools say whaaaat!?");
 
         staticDrlRuleEvaluation("matched!");
-        staticDrlRuleEvaluation("another match!");
-        staticDrlRuleEvaluation("no match");
+//        staticDrlRuleEvaluation("another match!");
+//        staticDrlRuleEvaluation("no match");
 //
 //        addNewRuleDrl("matched!");
 //        addNewRuleDrl("another match!");
@@ -37,7 +36,7 @@ public class Main {
 //        addExcelDecisionTableAsDrls("another match!");
 //        addExcelDecisionTableAsDrls("no match");
 
-//        discountRuleEvaluation();
+        discountRuleEvaluation();
     }
 
     private static void discountRuleEvaluation() {
@@ -47,24 +46,25 @@ public class Main {
 
         System.out.println("==");
 
-        System.out.println("matchesToString => " + agendaEventListener.matchsToString());
+        System.out.println("matchesToString => " + agendaEventListener.matchesToString());
 
         Product product = new Product("glaxosmithkline", "Rx");
         Seller seller = new Seller("seller_location_123");
         Lot lot = new Lot(20.0D);
 
-        DiscountInputSignals discountInputSignals = new DiscountInputSignals(product, seller, lot);
-        DiscountBasePrice discountBasePrice = new DiscountBasePrice();
+        DiscountBasePrice discountBasePrice = new DiscountBasePrice(null);
 
         List<Command> commandList = new ArrayList<>();
-        commandList.add(newInsert(discountInputSignals, "inputData"));
+        commandList.add(newInsert(product, "inputProduct"));
+        commandList.add(newInsert(seller, "inputSeller"));
+        commandList.add(newInsert(lot, "inputLot"));
         commandList.add(newInsert(discountBasePrice, "successEvaluation"));
         commandList.add(newFireAllRules());
 
         ExecutionResults executionResults = kieSession.execute(newBatchExecution(commandList));
 
         System.out.println("rule result: " + executionResults.getValue("successEvaluation"));
-        System.out.println("matchesToString => " + agendaEventListener.matchsToString());
+        System.out.println("matchesToString => " + agendaEventListener.matchesToString());
     }
 
     private static void addExcelDecisionTableAsDrls(String msg) {
